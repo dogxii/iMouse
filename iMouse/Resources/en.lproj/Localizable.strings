@@ -17,6 +17,7 @@
 // MARK: - Menu Bar
 
 "menubar.actionsStatus" = "%d / %d actions enabled";
+"menubar.launchAtLoginEnabled" = "✓ Launch at Login";
 "menubar.openSettings" = "Open Settings…";
 "menubar.extensionSettings" = "Finder Extension Settings…";
 "menubar.quit" = "Quit iMouse";
@@ -128,6 +129,13 @@
 "settings.general.language" = "Language";
 "settings.general.restartHint" = "Language change will take full effect after restarting the app.";
 "settings.general.showIcons" = "Show icons in context menu";
+"settings.general.launchAtLogin" = "Launch at Login";
+"settings.general.launchAtLogin.enabled" = "Enabled";
+"settings.general.launchAtLogin.notRegistered" = "Not enabled";
+"settings.general.launchAtLogin.notFound" = "Not found";
+"settings.general.launchAtLogin.requiresApproval" = "Requires approval in System Settings";
+"settings.general.launchAtLogin.approvalHint" = "Please approve iMouse in System Settings → General → Login Items.";
+"settings.general.launchAtLogin.openSystemSettings" = "Open System Settings";
 "settings.general.authFolders" = "Authorization Folders";
 "settings.general.authFoldersDesc" = "iMouse can only operate within authorized folders. Add the folders where you want to use right-click menu actions.";
 "settings.general.addFolder" = "Add Folder";

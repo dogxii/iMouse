@@ -142,25 +142,19 @@ enum TerminalLauncher {
         config.promptsUserIfNeeded = false
         config.activates = true
 
-        // 对于支持 CLI 参数的终端，可以通过 arguments 传递工作目录
-        // 但 NSWorkspace.open([dirURL], withApplicationAt:) 方式更通用可靠
-        switch terminalApp {
-        case .ghostty:
-            // Ghostty 支持 --working-directory 参数
-            // 但直接用目录 URL 打开也能正常工作
-            config.arguments = ["--working-directory=\(dirPath)"]
-        case .kitty:
-            // Kitty 支持 -d 参数指定工作目录
-            config.arguments = ["-d", dirPath]
-        case .alacritty:
-            // Alacritty 支持 --working-directory 参数
-            config.arguments = ["--working-directory", dirPath]
-        default:
-            break
-        }
+        // ⚠️ 不设置 config.arguments！
+        //
+        // RClick 的做法：只把 [dirURL] 作为「文档」传给 NSWorkspace.shared.open，
+        // 终端应用（Ghostty、iTerm2、Terminal.app 等）收到目录 URL 后，
+        // 会自己处理 cd 到该目录。
+        //
+        // 之前的错误：给 Ghostty 设了 --working-directory、给 Kitty 设了 -d 等，
+        // 但 NSWorkspace.OpenConfiguration.arguments 对 .app bundle 的传递方式
+        // 与命令行参数不同，很多终端应用并不从这个路径读取参数，
+        // 反而可能干扰正常的目录 URL 处理，导致终端打开后不在正确目录。
 
-        // 3. 使用 NSWorkspace.shared.open 打开（RClick 的核心方式）
-        //    将目录 URL 作为「文档」传递给终端应用
+        // 3. 使用 NSWorkspace.shared.open 打开（与 RClick 完全一致的方式）
+        //    将目录 URL 作为「文档」传递给终端应用，终端应用自行处理 cd
         NSWorkspace.shared.open(
             [dirURL],
             withApplicationAt: appURL,
@@ -183,31 +177,25 @@ enum TerminalLauncher {
     private static func launchViaProcess(dirPath: String, terminalApp: TerminalApp, asTab: Bool) {
         NSLog("[iMouse TerminalLauncher] Falling back to Process for %@", terminalApp.displayName)
 
+        // 统一使用 `open -a <AppName> <dirPath>` 方式（与 RClick 一致）。
+        // 将目录路径作为参数传给 /usr/bin/open，由终端应用自行处理 cd。
+        // 不使用 --args 传递终端特定参数 —— 这些参数在不同终端中行为不一致，
+        // 而且可能干扰终端应用对目录参数的正常处理。
         switch terminalApp {
         case .ghostty:
-            // open -n -a Ghostty --args --working-directory=<path>
             runProcessAsync(
-                arguments: ["-n", "-a", "Ghostty", "--args", "--working-directory=\(dirPath)"],
-                errorContext: "Ghostty (Process fallback)",
-                fallback: {
-                    runProcess(arguments: ["-a", "Ghostty"], errorContext: "Ghostty fallback bare")
-                }
+                arguments: ["-a", "Ghostty", dirPath],
+                errorContext: "Ghostty (Process fallback)"
             )
         case .terminal:
-            // Terminal.app 原生支持: open -a Terminal <folder>
             runProcessAsync(
                 arguments: ["-a", "Terminal", dirPath],
                 errorContext: "Terminal.app (Process fallback)"
             )
         case .iterm2:
-            // iTerm2: open -a iTerm <folder>
-            // iTerm2 支持将文件夹路径作为参数直接打开
             runProcessAsync(
                 arguments: ["-a", "iTerm", dirPath],
-                errorContext: "iTerm2 (Process fallback)",
-                fallback: {
-                    runProcess(arguments: ["-a", "iTerm"], errorContext: "iTerm2 fallback bare")
-                }
+                errorContext: "iTerm2 (Process fallback)"
             )
         case .warp:
             runProcessAsync(
@@ -216,19 +204,13 @@ enum TerminalLauncher {
             )
         case .kitty:
             runProcessAsync(
-                arguments: ["-n", "-a", "kitty", "--args", "-d", dirPath],
-                errorContext: "Kitty (Process fallback)",
-                fallback: {
-                    runProcess(arguments: ["-a", "kitty"], errorContext: "Kitty fallback bare")
-                }
+                arguments: ["-a", "kitty", dirPath],
+                errorContext: "Kitty (Process fallback)"
             )
         case .alacritty:
             runProcessAsync(
-                arguments: ["-n", "-a", "Alacritty", "--args", "--working-directory", dirPath],
-                errorContext: "Alacritty (Process fallback)",
-                fallback: {
-                    runProcess(arguments: ["-a", "Alacritty"], errorContext: "Alacritty fallback bare")
-                }
+                arguments: ["-a", "Alacritty", dirPath],
+                errorContext: "Alacritty (Process fallback)"
             )
         case .custom:
             // custom 应通过 launchCustom 处理，不会走到这里
@@ -273,13 +255,10 @@ enum TerminalLauncher {
             ) { runningApp, error in
                 if let error = error {
                     NSLog("[iMouse TerminalLauncher] NSWorkspace.open failed for custom app %@: %@", customPath, error.localizedDescription)
-                    // 降级：使用 Process + open 命令
+                    // 降级：使用 Process + open 命令（与 RClick 一致，直接传目录路径）
                     self.runProcessAsync(
                         arguments: ["-a", customPath, dirPath],
-                        errorContext: "Custom terminal (Process fallback)",
-                        fallback: {
-                            self.runProcess(arguments: ["-a", customPath], errorContext: "Custom terminal bare fallback")
-                        }
+                        errorContext: "Custom terminal (Process fallback)"
                     )
                 } else if let app = runningApp {
                     NSLog("[iMouse TerminalLauncher] ✅ Custom app opened: %@ (pid: %d)", app.localizedName ?? customPath, app.processIdentifier)

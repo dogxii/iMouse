@@ -3,7 +3,7 @@
 //  iMouse
 //
 //  主设置界面 —— 使用 TabView 分为多个标签页：
-//  1. 「通用」：动作列表，启用/禁用开关，语言设置，图标显示开关
+//  1. 「通用」：动作列表，启用/禁用开关，语言设置，图标显示开关，登录启动
 //  2. 「新建文件」：文件模板和默认扩展名配置
 //  3. 「复制」：路径分隔符、名称模式配置
 //  4. 「图片」：转换格式、缩放选项、质量配置
@@ -12,6 +12,7 @@
 //
 
 import SwiftUI
+import ServiceManagement
 
 // MARK: - SettingsView（设置主视图）
 
@@ -73,12 +74,66 @@ struct SettingsView: View {
     }
 }
 
+// MARK: - LaunchAtLoginManager（登录启动管理器）
+
+/// 封装 SMAppService 登录启动状态的读写。
+/// 使用 @Observable / ObservableObject 供 SwiftUI 实时响应状态变化。
+@MainActor
+final class LaunchAtLoginManager: ObservableObject {
+
+    static let shared = LaunchAtLoginManager()
+    private init() {}
+
+    /// 当前「登录时启动」是否已启用
+    var isEnabled: Bool {
+        get {
+            SMAppService.mainApp.status == .enabled
+        }
+        set {
+            do {
+                if newValue {
+                    try SMAppService.mainApp.register()
+                    NSLog("[iMouse LaunchAtLogin] 已注册登录启动")
+                } else {
+                    try SMAppService.mainApp.unregister()
+                    NSLog("[iMouse LaunchAtLogin] 已取消登录启动")
+                }
+                objectWillChange.send()
+            } catch {
+                NSLog("[iMouse LaunchAtLogin] 操作失败: %@", error.localizedDescription)
+            }
+        }
+    }
+
+    /// 当前注册状态的本地化描述（用于 UI 展示）
+    var statusDescription: String {
+        switch SMAppService.mainApp.status {
+        case .enabled:
+            return NSLocalizedString("settings.general.launchAtLogin.enabled", comment: "已启用")
+        case .requiresApproval:
+            return NSLocalizedString("settings.general.launchAtLogin.requiresApproval", comment: "需要在系统设置中批准")
+        case .notRegistered:
+            return NSLocalizedString("settings.general.launchAtLogin.notRegistered", comment: "未启用")
+        case .notFound:
+            return NSLocalizedString("settings.general.launchAtLogin.notFound", comment: "未找到")
+        @unknown default:
+            return ""
+        }
+    }
+
+    /// 是否需要用户前往系统设置手动批准
+    var requiresApproval: Bool {
+        SMAppService.mainApp.status == .requiresApproval
+    }
+}
+
 // MARK: - GeneralTab（通用标签页）
 
 /// 显示所有已注册动作的列表，每个动作可以单独启用/禁用。
-/// 还包含语言设置和菜单图标显示开关。
+/// 还包含语言设置、菜单图标显示开关和登录启动开关。
 struct GeneralTab: View {
     @EnvironmentObject var settingsManager: SettingsManager
+    @StateObject private var launchAtLogin = LaunchAtLoginManager.shared
     @State private var showRestartHint = false
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -127,6 +182,51 @@ struct GeneralTab: View {
                             .labelsHidden()
                             .toggleStyle(.switch)
                             .controlSize(.small)
+                    }
+
+                    Divider()
+
+                    // 登录时启动开关
+                    HStack {
+                        Label(
+                            NSLocalizedString("settings.general.launchAtLogin", comment: "Login at Launch"),
+                            systemImage: "power.circle"
+                        )
+
+                        Spacer()
+
+                        Toggle("", isOn: Binding(
+                            get: { launchAtLogin.isEnabled },
+                            set: { launchAtLogin.isEnabled = $0 }
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .controlSize(.small)
+                    }
+
+                    // 需要手动批准时显示提示
+                    if launchAtLogin.requiresApproval {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                                .font(.caption)
+                            Text(NSLocalizedString(
+                                "settings.general.launchAtLogin.approvalHint",
+                                comment: "Please approve iMouse in System Settings → General → Login Items."
+                            ))
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+
+                            Spacer()
+
+                            Button(NSLocalizedString("settings.general.launchAtLogin.openSystemSettings", comment: "Open System Settings")) {
+                                if let url = URL(string: "x-apple.systempreferences:com.apple.LoginItems-Settings.extension") {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }
+                            .font(.caption)
+                            .controlSize(.small)
+                        }
                     }
                 }
                 .padding(6)
