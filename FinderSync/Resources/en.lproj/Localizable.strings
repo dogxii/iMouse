@@ -1,0 +1,125 @@
+/*
+   Localizable.strings (English)
+   iMouse – FinderSync Extension
+*/
+
+// MARK: - Common
+
+"common.ok" = "OK";
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.delete" = "Delete";
+"common.reset" = "Reset";
+"common.error" = "Error";
+"common.success" = "Success";
+"common.warning" = "Warning";
+
+// MARK: - Finder Menu
+
+"menu.noActions" = "No available actions";
+
+// MARK: - Action: New File
+
+"action.newFile.name" = "New File";
+"action.newFile.desc" = "Create an empty file in the current folder";
+"action.newFile.defaultName" = "Untitled";
+"action.newFile.error.title" = "Cannot Create File";
+"action.newFile.error.noFolder" = "Unable to determine the target folder.";
+"action.newFile.error.createFailed" = "Failed to create file in %@.";
+
+// MARK: - Action: Terminal
+
+"action.terminal.name" = "Open Terminal Here";
+"action.terminal.desc" = "Open a new terminal window or tab at the selected location";
+"action.terminal.windowDesc" = "Open a new terminal window at the selected location";
+"action.terminal.tabDesc" = "Open a new terminal tab at the selected location";
+"action.terminal.submenuTitle" = "Open %@ Here";
+"action.terminal.newWindow" = "New %@ Window Here";
+"action.terminal.newTab" = "New %@ Tab Here";
+"action.terminal.error.title" = "Cannot Open Terminal";
+"action.terminal.error.noDir" = "Unable to determine the working directory.";
+"action.terminal.error.notInstalled" = "%@ was not found. Please make sure it is installed, or change the terminal app in iMouse settings.";
+"action.terminal.error.launchFailed" = "Failed to launch %@: %@";
+"action.terminal.error.noCustomPath" = "No custom terminal path configured. Please set the terminal path in iMouse settings.";
+
+// MARK: - Action: Ghostty (Legacy/Download)
+
+"action.ghostty.name" = "Open Ghostty Here";
+"action.ghostty.desc" = "Open a new Ghostty terminal window at the selected location";
+"action.ghostty.download" = "Go to Download";
+"action.ghostty.error.title" = "Cannot Open Ghostty";
+"action.ghostty.error.noDir" = "Unable to determine the working directory.";
+"action.ghostty.error.notInstalled" = "Ghostty terminal was not found. Please make sure Ghostty is installed, or specify the path in iMouse settings.\n\nDownload: https://ghostty.org";
+"action.ghostty.error.launchFailed" = "Failed to launch Ghostty: %@";
+
+// MARK: - Action: Copy Path
+
+"action.copyPath.name" = "Copy Path";
+"action.copyPath.desc" = "Copy the absolute path of selected items to the clipboard";
+
+// MARK: - Action: Copy Name
+
+"action.copyName.name" = "Copy Name";
+"action.copyName.desc" = "Copy the file/folder name of selected items to the clipboard";
+
+// MARK: - Action: AirDrop
+
+"action.airDrop.name" = "AirDrop";
+"action.airDrop.desc" = "Send selected files or folders via AirDrop";
+"action.airDrop.error.title" = "AirDrop Unavailable";
+"action.airDrop.error.unavailable" = "This device does not support AirDrop, or AirDrop is not enabled. Please check System Settings.";
+"action.airDrop.error.cannotPerform" = "Cannot AirDrop the selected items. Please make sure AirDrop is enabled and a receiving device is available.";
+"action.airDrop.error.dragHint" = "AirDrop window has been opened. Please drag your files to the AirDrop window to share them.";
+
+// MARK: - Action: Convert Image
+
+"action.convert.name" = "Convert Image";
+"action.convert.desc" = "Convert selected images to PNG, JPEG, WebP, and other formats";
+"action.convert.error.title" = "Conversion Failed";
+"action.convert.error.someFailed" = "The following files failed to convert:\n%@";
+"action.convert.error.webpNotSupported" = "macOS does not natively support writing WebP format.\n\nTo enable WebP conversion, please install the WebP tools via Homebrew:\n\n  brew install webp\n\nThen try again.";
+
+// MARK: - Action: Resize Image
+
+"action.resize.name" = "Resize Image";
+"action.resize.desc" = "Resize selected images to preset dimensions while maintaining aspect ratio";
+"action.resize.error.title" = "Resize Failed";
+"action.resize.error.someFailed" = "The following files failed to resize:\n%@";
+"action.resize.custom" = "Custom Size…";
+"action.resize.customTitle" = "Custom Resize";
+"action.resize.customMessage" = "Enter target width in pixels (e.g. 800) or percentage (e.g. 60%).";
+"action.resize.customMessageV2" = "Choose a resize mode and enter the target size.";
+"action.resize.customPlaceholder" = "e.g. 800 or 60%";
+"action.resize.customInvalid" = "Please enter a valid number. Use a plain number for pixel width (e.g. 800) or add % for percentage (e.g. 60%).";
+"action.resize.modeWidth" = "Width";
+"action.resize.modeDimensions" = "W × H";
+"action.resize.modePercent" = "Percent";
+"action.resize.widthLabel" = "Width:";
+"action.resize.heightLabel" = "Height:";
+"action.resize.percentLabel" = "Scale:";
+"action.resize.widthPlaceholder" = "Width (px)";
+"action.resize.heightPlaceholder" = "Height (px)";
+"action.resize.percentPlaceholder" = "e.g. 50";
+"action.resize.invalidWidth" = "Please enter a valid width (1–100000).";
+"action.resize.invalidHeight" = "Please enter a valid height (1–100000).";
+"action.resize.invalidPercent" = "Please enter a valid percentage (1–1000).";
+
+// MARK: - Settings: Separator
+
+"settings.separator.newline" = "Newline";
+"settings.separator.comma" = "Comma";
+"settings.separator.space" = "Space";
+"settings.separator.tab" = "Tab";
+
+// MARK: - Settings: Copy Name Mode
+
+"settings.copyName.withExt" = "Include extension";
+"settings.copyName.withoutExt" = "Exclude extension";
+
+// MARK: - Settings: Language
+
+"settings.language.system" = "Follow System";
+
+// MARK: - Settings: Terminal
+
+"settings.terminal.custom" = "Custom";

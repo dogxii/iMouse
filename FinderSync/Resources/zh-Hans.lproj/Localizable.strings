@@ -1,0 +1,125 @@
+/*
+   Localizable.strings (简体中文)
+   iMouse – FinderSync Extension
+*/
+
+// MARK: - 通用
+
+"common.ok" = "好";
+"common.cancel" = "取消";
+"common.save" = "保存";
+"common.delete" = "删除";
+"common.reset" = "重置";
+"common.error" = "错误";
+"common.success" = "成功";
+"common.warning" = "警告";
+
+// MARK: - Finder 菜单
+
+"menu.noActions" = "无可用操作";
+
+// MARK: - 动作：新建文件
+
+"action.newFile.name" = "新建文件";
+"action.newFile.desc" = "在当前文件夹中创建空白文件";
+"action.newFile.defaultName" = "未命名";
+"action.newFile.error.title" = "无法创建文件";
+"action.newFile.error.noFolder" = "无法确定目标文件夹。";
+"action.newFile.error.createFailed" = "无法在 %@ 中创建文件。";
+
+// MARK: - 动作：终端
+
+"action.terminal.name" = "在此处打开终端";
+"action.terminal.desc" = "在选中位置打开新的终端窗口或标签页";
+"action.terminal.windowDesc" = "在选中位置打开新的终端窗口";
+"action.terminal.tabDesc" = "在选中位置打开新的终端标签页";
+"action.terminal.submenuTitle" = "在此处打开 %@";
+"action.terminal.newWindow" = "新建 %@ 窗口";
+"action.terminal.newTab" = "新建 %@ 标签页";
+"action.terminal.error.title" = "无法打开终端";
+"action.terminal.error.noDir" = "无法确定工作目录。";
+"action.terminal.error.notInstalled" = "未找到 %@。请确保已安装该终端，或在 iMouse 设置中更换终端应用。";
+"action.terminal.error.launchFailed" = "启动 %@ 失败: %@";
+"action.terminal.error.noCustomPath" = "未配置自定义终端路径。请在 iMouse 设置中设置终端路径。";
+
+// MARK: - 动作：Ghostty（旧版/下载）
+
+"action.ghostty.name" = "在此处打开 Ghostty";
+"action.ghostty.desc" = "在选中位置打开新的 Ghostty 终端窗口";
+"action.ghostty.download" = "前往下载";
+"action.ghostty.error.title" = "无法打开 Ghostty";
+"action.ghostty.error.noDir" = "无法确定工作目录。";
+"action.ghostty.error.notInstalled" = "未找到 Ghostty 终端。请确保 Ghostty 已安装，或在 iMouse 设置中指定 Ghostty 的路径。\n\n下载地址: https://ghostty.org";
+"action.ghostty.error.launchFailed" = "启动 Ghostty 失败: %@";
+
+// MARK: - 动作：复制路径
+
+"action.copyPath.name" = "复制路径";
+"action.copyPath.desc" = "将选中项的绝对路径复制到剪贴板";
+
+// MARK: - 动作：复制名称
+
+"action.copyName.name" = "复制名称";
+"action.copyName.desc" = "将选中项的文件/文件夹名称复制到剪贴板";
+
+// MARK: - 动作：AirDrop
+
+"action.airDrop.name" = "AirDrop";
+"action.airDrop.desc" = "通过 AirDrop 发送选中的文件或文件夹";
+"action.airDrop.error.title" = "AirDrop 不可用";
+"action.airDrop.error.unavailable" = "当前设备不支持 AirDrop，或 AirDrop 服务未启用。请检查系统设置。";
+"action.airDrop.error.cannotPerform" = "无法对所选项目执行 AirDrop。请确保 AirDrop 已开启并且有可用的接收设备。";
+"action.airDrop.error.dragHint" = "AirDrop 窗口已打开。请将文件拖放到 AirDrop 窗口中进行分享。";
+
+// MARK: - 动作：转换图片格式
+
+"action.convert.name" = "转换图片格式";
+"action.convert.desc" = "将选中的图片转换为 PNG、JPEG、WebP 等格式";
+"action.convert.error.title" = "转换失败";
+"action.convert.error.someFailed" = "以下文件转换失败:\n%@";
+"action.convert.error.webpNotSupported" = "macOS 不原生支持写入 WebP 格式。\n\n要启用 WebP 转换，请通过 Homebrew 安装 WebP 工具：\n\n  brew install webp\n\n安装后重试即可。";
+
+// MARK: - 动作：调整图片大小
+
+"action.resize.name" = "调整图片大小";
+"action.resize.desc" = "按预设尺寸缩放选中的图片，保持宽高比";
+"action.resize.error.title" = "缩放失败";
+"action.resize.error.someFailed" = "以下文件缩放失败:\n%@";
+"action.resize.custom" = "自定义大小…";
+"action.resize.customTitle" = "自定义缩放";
+"action.resize.customMessage" = "输入目标宽度（像素，如 800）或百分比（如 60%）。";
+"action.resize.customMessageV2" = "选择缩放模式并输入目标尺寸。";
+"action.resize.customPlaceholder" = "如 800 或 60%";
+"action.resize.customInvalid" = "请输入有效数字。输入纯数字表示像素宽度（如 800），加 % 表示百分比（如 60%）。";
+"action.resize.modeWidth" = "宽度";
+"action.resize.modeDimensions" = "宽 × 高";
+"action.resize.modePercent" = "百分比";
+"action.resize.widthLabel" = "宽度:";
+"action.resize.heightLabel" = "高度:";
+"action.resize.percentLabel" = "缩放:";
+"action.resize.widthPlaceholder" = "宽度 (px)";
+"action.resize.heightPlaceholder" = "高度 (px)";
+"action.resize.percentPlaceholder" = "如 50";
+"action.resize.invalidWidth" = "请输入有效的宽度值（1–100000）。";
+"action.resize.invalidHeight" = "请输入有效的高度值（1–100000）。";
+"action.resize.invalidPercent" = "请输入有效的百分比（1–1000）。";
+
+// MARK: - 设置：分隔符
+
+"settings.separator.newline" = "换行";
+"settings.separator.comma" = "逗号";
+"settings.separator.space" = "空格";
+"settings.separator.tab" = "Tab";
+
+// MARK: - 设置：复制名称模式
+
+"settings.copyName.withExt" = "包含扩展名";
+"settings.copyName.withoutExt" = "不含扩展名";
+
+// MARK: - 设置：语言
+
+"settings.language.system" = "跟随系统";
+
+// MARK: - 设置：终端
+
+"settings.terminal.custom" = "自定义";

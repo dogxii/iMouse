@@ -1,0 +1,169 @@
+# ─────────────────────────────────────────────────────────────
+#  iMouse – XcodeGen 项目配置文件 (project.yml)
+#
+#  使用方法：
+#    1. 安装 XcodeGen:  brew install xcodegen
+#    2. 在本文件所在目录运行:  xcodegen generate
+#    3. 打开生成的 iMouse.xcodeproj
+#
+#  本文件定义了两个 target：
+#    - iMouse (主 App)：菜单栏应用 + SwiftUI 设置界面
+#    - FinderSyncExt (Finder Sync Extension)：右键菜单扩展
+#
+#  两个 target 共享 Shared/ 目录下的核心代码，通过 App Group
+#  共享 UserDefaults 设置数据。
+#
+#  如需调试 Finder Sync 扩展，请在 Xcode 中手动创建一个
+#  scheme，将 Executable 设为 Finder.app。
+# ─────────────────────────────────────────────────────────────
+
+name: iMouse
+
+# ── 全局选项 ────────────────────────────────────────────────
+options:
+  # 最低部署目标：macOS 14 Sonoma
+  deploymentTarget:
+    macOS: '14.0'
+  # Bundle ID 前缀，各 target 在此基础上追加
+  bundleIdPrefix: com.dogxi
+  # 自动创建中间文件夹分组
+  createIntermediateGroups: true
+
+# ── 全局构建设置 ────────────────────────────────────────────
+settings:
+  base:
+    SWIFT_VERSION: '5.9'
+
+# ─────────────────────────────────────────────────────────────
+#  Targets（构建目标）
+# ─────────────────────────────────────────────────────────────
+
+targets:
+  # ═══════════════════════════════════════════════════════════
+  #  主 App Target
+  #  职责：菜单栏图标 + SwiftUI 设置窗口 + 承载 Finder 扩展
+  # ═══════════════════════════════════════════════════════════
+  iMouse:
+    type: application
+    platform: macOS
+
+    # 源代码目录
+    sources:
+      # 主 App 代码（入口、UI、Actions）
+      - path: iMouse
+        excludes:
+          - '*.entitlements'
+          - Info.plist
+          - Resources
+      # 共享核心代码（SelectionContext、ContextAction、AppSettings）
+      - path: Shared
+      # Asset Catalog（App Icon 等资源）
+      - path: iMouse/Assets.xcassets
+
+    # 构建设置
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dogxi.iMouse
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: Config/iMouse-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/iMouse.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+    # 构建脚本：
+    # 1. 确保 entitlements 文件正确（XcodeGen 会覆盖，所以每次从 Config/ 恢复）
+    # 2. 将本地化资源复制到 .app bundle 中
+    preBuildScripts:
+      - name: 'Restore entitlements from Config/'
+        script: |
+          cp -f "${SRCROOT}/Config/iMouse.entitlements" "${SRCROOT}/Config/iMouse.entitlements.bak" 2>/dev/null || true
+        basedOnDependencyAnalysis: false
+
+    postCompileScripts:
+      - name: 'Copy resources into iMouse.app'
+        script: |
+          set -e
+          RESOURCES_SRC="${SRCROOT}/iMouse/Resources"
+          APP_RESOURCES="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources"
+          for LOCALE_DIR in en zh-Hans; do
+            SRC="${RESOURCES_SRC}/${LOCALE_DIR}.lproj/Localizable.strings"
+            DST="${APP_RESOURCES}/${LOCALE_DIR}.lproj"
+            if [ -f "${SRC}" ]; then
+              mkdir -p "${DST}"
+              cp -f "${SRC}" "${DST}/Localizable.strings"
+            fi
+          done
+        basedOnDependencyAnalysis: false
+
+    # 依赖：Finder Sync 扩展嵌入主 App 的 PlugIns 目录
+    dependencies:
+      - target: FinderSyncExt
+        embed: true
+        codeSign: true
+        copyPhase:
+          destination: plugins
+
+  # ═══════════════════════════════════════════════════════════
+  #  Finder Sync Extension Target
+  #  职责：监听 Finder 右键事件，动态构建上下文菜单并执行动作
+  # ═══════════════════════════════════════════════════════════
+  FinderSyncExt:
+    type: app-extension
+    platform: macOS
+
+    # 源代码目录
+    sources:
+      # 扩展入口代码（FinderSync.swift）
+      - path: FinderSync
+        excludes:
+          - '*.entitlements'
+          - Info.plist
+          - Resources
+      # 共享核心代码（与主 App 共享 Action 系统）
+      - path: Shared
+      # Action 实现代码（扩展需要直接引用 Action 类来构建菜单和执行动作）
+      - path: iMouse/Core
+
+    # 构建设置
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dogxi.iMouse.FinderSync
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: Config/FinderSync-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/FinderSync.entitlements
+        WRAPPER_EXTENSION: appex
+        SKIP_INSTALL: true
+        # macOS 15 要求扩展必须沙盒化
+        ENABLE_APP_SANDBOX: true
+
+    # 构建后脚本：将本地化资源复制到 .appex bundle 中
+    postCompileScripts:
+      - name: 'Copy resources into FinderSyncExt.appex'
+        script: |
+          set -e
+          RESOURCES_SRC="${SRCROOT}/FinderSync/Resources"
+          APPEX_RESOURCES="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources"
+          for LOCALE_DIR in en zh-Hans; do
+            SRC="${RESOURCES_SRC}/${LOCALE_DIR}.lproj/Localizable.strings"
+            DST="${APPEX_RESOURCES}/${LOCALE_DIR}.lproj"
+            if [ -f "${SRC}" ]; then
+              mkdir -p "${DST}"
+              cp -f "${SRC}" "${DST}/Localizable.strings"
+            fi
+          done
+        basedOnDependencyAnalysis: false
+
+# ─────────────────────────────────────────────────────────────
+#  Schemes（构建方案）
+# ─────────────────────────────────────────────────────────────
+
+schemes:
+  # 主方案：构建主 App（会自动构建并嵌入 FinderSync 扩展）
+  iMouse:
+    build:
+      targets:
+        iMouse: all
+        FinderSyncExt: all
+    run:
+      config: Debug
+    archive:
+      config: Release

@@ -1,0 +1,226 @@
+/*
+   Localizable.strings (English)
+   iMouse
+*/
+
+// MARK: - Common
+
+"common.ok" = "OK";
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.delete" = "Delete";
+"common.reset" = "Reset";
+"common.error" = "Error";
+"common.success" = "Success";
+"common.warning" = "Warning";
+
+// MARK: - Menu Bar
+
+"menubar.actionsStatus" = "%d / %d actions enabled";
+"menubar.openSettings" = "Open Settings…";
+"menubar.extensionSettings" = "Finder Extension Settings…";
+"menubar.quit" = "Quit iMouse";
+
+// MARK: - Finder Menu
+
+"menu.noActions" = "No available actions";
+
+// MARK: - Action: New File
+
+"action.newFile.name" = "New File";
+"action.newFile.desc" = "Create an empty file in the current folder";
+"action.newFile.defaultName" = "Untitled";
+"action.newFile.error.title" = "Cannot Create File";
+"action.newFile.error.noFolder" = "Unable to determine the target folder.";
+"action.newFile.error.createFailed" = "Failed to create file in %@.";
+
+// MARK: - Action: Terminal
+
+"action.terminal.name" = "Open Terminal Here";
+"action.terminal.desc" = "Open a new terminal window or tab at the selected location";
+"action.terminal.windowDesc" = "Open a new terminal window at the selected location";
+"action.terminal.tabDesc" = "Open a new terminal tab at the selected location";
+"action.terminal.submenuTitle" = "Open %@ Here";
+"action.terminal.newWindow" = "New %@ Window Here";
+"action.terminal.newTab" = "New %@ Tab Here";
+"action.terminal.error.title" = "Cannot Open Terminal";
+"action.terminal.error.noDir" = "Unable to determine the working directory.";
+"action.terminal.error.notInstalled" = "%@ was not found. Please make sure it is installed, or change the terminal app in iMouse settings.";
+"action.terminal.error.launchFailed" = "Failed to launch %@: %@";
+"action.terminal.error.noCustomPath" = "No custom terminal path configured. Please set the terminal path in iMouse settings.";
+
+// MARK: - Action: Ghostty (Legacy/Download)
+
+"action.ghostty.name" = "Open Ghostty Here";
+"action.ghostty.desc" = "Open a new Ghostty terminal window at the selected location";
+"action.ghostty.download" = "Go to Download";
+"action.ghostty.error.title" = "Cannot Open Ghostty";
+"action.ghostty.error.noDir" = "Unable to determine the working directory.";
+"action.ghostty.error.notInstalled" = "Ghostty terminal was not found. Please make sure Ghostty is installed, or specify the path in iMouse settings.\n\nDownload: https://ghostty.org";
+"action.ghostty.error.launchFailed" = "Failed to launch Ghostty: %@";
+
+// MARK: - Action: Copy Path
+
+"action.copyPath.name" = "Copy Path";
+"action.copyPath.desc" = "Copy the absolute path of selected items to the clipboard";
+
+// MARK: - Action: Copy Name
+
+"action.copyName.name" = "Copy Name";
+"action.copyName.desc" = "Copy the file/folder name of selected items to the clipboard";
+
+// MARK: - Action: AirDrop
+
+"action.airDrop.name" = "AirDrop";
+"action.airDrop.desc" = "Send selected files or folders via AirDrop";
+"action.airDrop.error.title" = "AirDrop Unavailable";
+"action.airDrop.error.foldersNotSupported" = "AirDrop cannot share folders directly. Please select individual files inside the folder.";
+
+// MARK: - Action: Convert Image
+
+"action.convert.name" = "Convert Image";
+"action.convert.desc" = "Convert selected images to PNG, JPEG, WebP, and other formats";
+"action.convert.error.title" = "Conversion Failed";
+"action.convert.error.someFailed" = "The following files failed to convert:\n%@";
+"action.convert.error.webpNotSupported" = "macOS does not natively support writing WebP format.\n\nTo enable WebP conversion, please install the WebP tools via Homebrew:\n\n  brew install webp\n\nThen try again.";
+
+// MARK: - Action: Resize Image
+
+"action.resize.name" = "Resize Image";
+"action.resize.desc" = "Resize selected images to preset dimensions while maintaining aspect ratio";
+"action.resize.error.title" = "Resize Failed";
+"action.resize.error.someFailed" = "The following files failed to resize:\n%@";
+"action.resize.custom" = "Custom Size…";
+"action.resize.customTitle" = "Custom Resize";
+"action.resize.customMessage" = "Enter target width in pixels (e.g. 800) or percentage (e.g. 60%).";
+"action.resize.customMessageV2" = "Choose a resize mode and enter the target size.";
+"action.resize.customPlaceholder" = "e.g. 800 or 60%";
+"action.resize.customInvalid" = "Please enter a valid number. Use a plain number for pixel width (e.g. 800) or add % for percentage (e.g. 60%).";
+"action.resize.modeWidth" = "Width";
+"action.resize.modeDimensions" = "W × H";
+"action.resize.modePercent" = "Percent";
+"action.resize.widthLabel" = "Width:";
+"action.resize.heightLabel" = "Height:";
+"action.resize.percentLabel" = "Scale:";
+"action.resize.widthPlaceholder" = "Width (px)";
+"action.resize.heightPlaceholder" = "Height (px)";
+"action.resize.percentPlaceholder" = "e.g. 50";
+"action.resize.invalidWidth" = "Please enter a valid width (1–100000).";
+"action.resize.invalidHeight" = "Please enter a valid height (1–100000).";
+"action.resize.invalidPercent" = "Please enter a valid percentage (1–1000).";
+
+// MARK: - Settings: Tabs
+
+"settings.tab.general" = "General";
+"settings.tab.newFile" = "New File";
+"settings.tab.copy" = "Copy";
+"settings.tab.image" = "Image";
+"settings.tab.terminal" = "Terminal";
+"settings.tab.about" = "About";
+
+// MARK: - Settings: General
+
+"settings.general.title" = "Context Menu Actions";
+"settings.general.subtitle" = "Choose which actions to show in the Finder context menu.";
+"settings.general.enableAll" = "Enable All";
+"settings.general.disableAll" = "Disable All";
+"settings.general.resetDefaults" = "Reset to Defaults";
+"settings.general.language" = "Language";
+"settings.general.restartHint" = "Language change will take full effect after restarting the app.";
+"settings.general.showIcons" = "Show icons in context menu";
+"settings.general.authFolders" = "Authorization Folders";
+"settings.general.authFoldersDesc" = "iMouse can only operate within authorized folders. Add the folders where you want to use right-click menu actions.";
+"settings.general.addFolder" = "Add Folder";
+"settings.general.removeFolder" = "Remove this folder";
+"settings.general.noFolders" = "No authorized folders. Please add at least one folder to use iMouse.";
+
+// MARK: - Folder Authorization
+
+"auth.panel.message" = "Please select the folder where iMouse should work. Choose \"/\" (Macintosh HD) to enable it everywhere.";
+"auth.panel.authorize" = "Authorize";
+
+// MARK: - Settings: Language
+
+"settings.language.system" = "Follow System";
+
+// MARK: - Settings: New File
+
+"settings.newFile.title" = "New File Settings";
+"settings.newFile.defaultExt" = "Default file extension:";
+"settings.newFile.templates" = "File templates (shown in submenu)";
+"settings.newFile.addName" = "Display name";
+"settings.newFile.addExt" = "Extension";
+"settings.newFile.add" = "Add";
+"settings.newFile.resetTemplates" = "Reset to Default Templates";
+
+// MARK: - Settings: Copy
+
+"settings.copy.pathSection" = "Copy Path";
+"settings.copy.separator" = "Multi-file path separator:";
+"settings.copy.preview" = "Preview:";
+"settings.copy.nameSection" = "Copy Name";
+"settings.copy.nameMode" = "Name format:";
+"settings.copy.nameExample" = "Example: %@";
+
+// MARK: - Settings: Separator
+
+"settings.separator.newline" = "Newline";
+"settings.separator.comma" = "Comma";
+"settings.separator.space" = "Space";
+"settings.separator.tab" = "Tab";
+
+// MARK: - Settings: Copy Name Mode
+
+"settings.copyName.withExt" = "Include extension";
+"settings.copyName.withoutExt" = "Exclude extension";
+
+// MARK: - Settings: Image
+
+"settings.image.convertSection" = "Convert Image Format";
+"settings.image.convertDesc" = "Choose which formats to show in the \"Convert to\" submenu.";
+"settings.image.quality" = "Lossy compression quality:";
+"settings.image.qualityHint" = "Only applies to lossy formats such as JPEG, HEIC, and WebP.";
+"settings.image.resizeSection" = "Resize Image";
+"settings.image.resizeDesc" = "Preset options shown in the \"Resize\" submenu.";
+"settings.image.resizeWidth" = "Width %d pixels";
+"settings.image.resizePercent" = "Scale to %d%%";
+"settings.image.resizeDimensions" = "%d × %d pixels";
+"settings.image.resetResize" = "Reset to Defaults";
+
+// MARK: - Settings: Terminal
+
+"settings.terminal.appSection" = "Terminal Application";
+"settings.terminal.appDesc" = "Choose which terminal application to use when opening a terminal from Finder.";
+"settings.terminal.appPicker" = "Terminal:";
+"settings.terminal.custom" = "Custom";
+"settings.terminal.installed" = "%@ is installed";
+"settings.terminal.notInstalled" = "%@ is not installed";
+"settings.terminal.pathSection" = "Custom Path";
+"settings.terminal.customPathRequired" = "Specify the path to your terminal application (.app bundle or executable).";
+"settings.terminal.customPathOptional" = "Optionally override the auto-detected path. Leave empty for auto-detection.";
+"settings.terminal.ghosttyDesc" = "Configure the path to the Ghostty executable. Leave empty for auto-detection.";
+"settings.terminal.path" = "Path:";
+"settings.terminal.placeholder" = "Auto-detect";
+"settings.terminal.browse" = "Browse…";
+"settings.terminal.detect" = "Auto Detect";
+"settings.terminal.notFound" = "❌ %@ not found";
+"settings.terminal.searchPaths" = "Paths searched during auto-detection:";
+"settings.terminal.envVar" = "environment variable";
+"settings.terminal.browseTitle" = "Select Terminal Application or Executable";
+"settings.terminal.behaviorSection" = "Behavior";
+"settings.terminal.behaviorDesc" = "Right-clicking in Finder will show two options: \"New Window Here\" opens a new terminal window, and \"New Tab Here\" opens a new tab in the existing terminal window. Both will navigate to the selected directory.";
+"settings.terminal.alacrittyNote" = "Note: Alacritty does not support tabs natively. \"New Tab Here\" will open a new window instead.";
+
+// MARK: - About
+
+"about.version" = "Version 1.1.0";
+"about.extensionStatus" = "Finder Extension Status";
+"about.openExtensionSettings" = "Open Extension Settings";
+"about.checking" = "Checking…";
+"about.extensionEnabled" = "✅ Extension is enabled";
+"about.extensionDisabled" = "❌ Extension is not enabled — please enable it in System Settings";
+"about.extensionUnknown" = "⚠️ Unable to detect extension status";
+
+// MARK: - Settings Window
+
+"settings.window.title" = "iMouse Settings";

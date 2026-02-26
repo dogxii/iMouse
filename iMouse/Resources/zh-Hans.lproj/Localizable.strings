@@ -1,0 +1,226 @@
+/*
+   Localizable.strings (简体中文)
+   iMouse
+*/
+
+// MARK: - 通用
+
+"common.ok" = "好";
+"common.cancel" = "取消";
+"common.save" = "保存";
+"common.delete" = "删除";
+"common.reset" = "重置";
+"common.error" = "错误";
+"common.success" = "成功";
+"common.warning" = "警告";
+
+// MARK: - 菜单栏
+
+"menubar.actionsStatus" = "已启用 %d / %d 个动作";
+"menubar.openSettings" = "打开设置…";
+"menubar.extensionSettings" = "Finder 扩展设置…";
+"menubar.quit" = "退出 iMouse";
+
+// MARK: - Finder 菜单
+
+"menu.noActions" = "无可用操作";
+
+// MARK: - 动作：新建文件
+
+"action.newFile.name" = "新建文件";
+"action.newFile.desc" = "在当前文件夹中创建空白文件";
+"action.newFile.defaultName" = "未命名";
+"action.newFile.error.title" = "无法创建文件";
+"action.newFile.error.noFolder" = "无法确定目标文件夹。";
+"action.newFile.error.createFailed" = "无法在 %@ 中创建文件。";
+
+// MARK: - 动作：终端
+
+"action.terminal.name" = "在此处打开终端";
+"action.terminal.desc" = "在选中位置打开新的终端窗口或标签页";
+"action.terminal.windowDesc" = "在选中位置打开新的终端窗口";
+"action.terminal.tabDesc" = "在选中位置打开新的终端标签页";
+"action.terminal.submenuTitle" = "在此处打开 %@";
+"action.terminal.newWindow" = "新建 %@ 窗口";
+"action.terminal.newTab" = "新建 %@ 标签页";
+"action.terminal.error.title" = "无法打开终端";
+"action.terminal.error.noDir" = "无法确定工作目录。";
+"action.terminal.error.notInstalled" = "未找到 %@。请确保已安装该终端，或在 iMouse 设置中更换终端应用。";
+"action.terminal.error.launchFailed" = "启动 %@ 失败: %@";
+"action.terminal.error.noCustomPath" = "未配置自定义终端路径。请在 iMouse 设置中设置终端路径。";
+
+// MARK: - 动作：Ghostty（旧版/下载）
+
+"action.ghostty.name" = "在此处打开 Ghostty";
+"action.ghostty.desc" = "在选中位置打开新的 Ghostty 终端窗口";
+"action.ghostty.download" = "前往下载";
+"action.ghostty.error.title" = "无法打开 Ghostty";
+"action.ghostty.error.noDir" = "无法确定工作目录。";
+"action.ghostty.error.notInstalled" = "未找到 Ghostty 终端。请确保 Ghostty 已安装，或在 iMouse 设置中指定 Ghostty 的路径。\n\n下载地址: https://ghostty.org";
+"action.ghostty.error.launchFailed" = "启动 Ghostty 失败: %@";
+
+// MARK: - 动作：复制路径
+
+"action.copyPath.name" = "复制路径";
+"action.copyPath.desc" = "将选中项的绝对路径复制到剪贴板";
+
+// MARK: - 动作：复制名称
+
+"action.copyName.name" = "复制名称";
+"action.copyName.desc" = "将选中项的文件/文件夹名称复制到剪贴板";
+
+// MARK: - 动作：AirDrop
+
+"action.airDrop.name" = "AirDrop";
+"action.airDrop.desc" = "通过 AirDrop 发送选中的文件或文件夹";
+"action.airDrop.error.title" = "AirDrop 不可用";
+"action.airDrop.error.foldersNotSupported" = "AirDrop 不支持直接分享文件夹，请选择文件夹内的具体文件进行分享。";
+
+// MARK: - 动作：转换图片格式
+
+"action.convert.name" = "转换图片格式";
+"action.convert.desc" = "将选中的图片转换为 PNG、JPEG、WebP 等格式";
+"action.convert.error.title" = "转换失败";
+"action.convert.error.someFailed" = "以下文件转换失败:\n%@";
+"action.convert.error.webpNotSupported" = "macOS 不原生支持写入 WebP 格式。\n\n要启用 WebP 转换，请通过 Homebrew 安装 WebP 工具：\n\n  brew install webp\n\n安装后重试即可。";
+
+// MARK: - 动作：调整图片大小
+
+"action.resize.name" = "调整图片大小";
+"action.resize.desc" = "按预设尺寸缩放选中的图片，保持宽高比";
+"action.resize.error.title" = "缩放失败";
+"action.resize.error.someFailed" = "以下文件缩放失败:\n%@";
+"action.resize.custom" = "自定义大小…";
+"action.resize.customTitle" = "自定义缩放";
+"action.resize.customMessage" = "输入目标宽度（像素，如 800）或百分比（如 60%）。";
+"action.resize.customMessageV2" = "选择缩放模式并输入目标尺寸。";
+"action.resize.customPlaceholder" = "如 800 或 60%";
+"action.resize.customInvalid" = "请输入有效数字。输入纯数字表示像素宽度（如 800），加 % 表示百分比（如 60%）。";
+"action.resize.modeWidth" = "宽度";
+"action.resize.modeDimensions" = "宽 × 高";
+"action.resize.modePercent" = "百分比";
+"action.resize.widthLabel" = "宽度:";
+"action.resize.heightLabel" = "高度:";
+"action.resize.percentLabel" = "缩放:";
+"action.resize.widthPlaceholder" = "宽度 (px)";
+"action.resize.heightPlaceholder" = "高度 (px)";
+"action.resize.percentPlaceholder" = "如 50";
+"action.resize.invalidWidth" = "请输入有效的宽度值（1–100000）。";
+"action.resize.invalidHeight" = "请输入有效的高度值（1–100000）。";
+"action.resize.invalidPercent" = "请输入有效的百分比（1–1000）。";
+
+// MARK: - 设置：标签页
+
+"settings.tab.general" = "通用";
+"settings.tab.newFile" = "新建文件";
+"settings.tab.copy" = "复制";
+"settings.tab.image" = "图片";
+"settings.tab.terminal" = "终端";
+"settings.tab.about" = "关于";
+
+// MARK: - 设置：通用
+
+"settings.general.title" = "右键菜单动作";
+"settings.general.subtitle" = "选择在 Finder 右键菜单中显示哪些动作。";
+"settings.general.enableAll" = "全部启用";
+"settings.general.disableAll" = "全部禁用";
+"settings.general.resetDefaults" = "恢复默认";
+"settings.general.language" = "语言";
+"settings.general.restartHint" = "语言更改将在重新启动应用后完全生效。";
+"settings.general.showIcons" = "在右键菜单中显示图标";
+"settings.general.authFolders" = "授权文件夹";
+"settings.general.authFoldersDesc" = "iMouse 只能在已授权的文件夹内工作。请添加你需要使用右键菜单的文件夹。";
+"settings.general.addFolder" = "添加文件夹";
+"settings.general.removeFolder" = "移除此文件夹";
+"settings.general.noFolders" = "没有已授权的文件夹。请至少添加一个文件夹才能使用 iMouse。";
+
+// MARK: - 文件夹授权
+
+"auth.panel.message" = "请选择 iMouse 需要工作的文件夹。选择「/」（Macintosh HD）可在所有位置启用。";
+"auth.panel.authorize" = "授权";
+
+// MARK: - 设置：语言
+
+"settings.language.system" = "跟随系统";
+
+// MARK: - 设置：新建文件
+
+"settings.newFile.title" = "新建文件设置";
+"settings.newFile.defaultExt" = "默认文件扩展名:";
+"settings.newFile.templates" = "文件模板（出现在子菜单中）";
+"settings.newFile.addName" = "显示名称";
+"settings.newFile.addExt" = "扩展名";
+"settings.newFile.add" = "添加";
+"settings.newFile.resetTemplates" = "恢复默认模板";
+
+// MARK: - 设置：复制
+
+"settings.copy.pathSection" = "复制路径";
+"settings.copy.separator" = "多文件路径分隔符:";
+"settings.copy.preview" = "预览:";
+"settings.copy.nameSection" = "复制名称";
+"settings.copy.nameMode" = "名称格式:";
+"settings.copy.nameExample" = "示例: %@";
+
+// MARK: - 设置：分隔符
+
+"settings.separator.newline" = "换行";
+"settings.separator.comma" = "逗号";
+"settings.separator.space" = "空格";
+"settings.separator.tab" = "Tab";
+
+// MARK: - 设置：复制名称模式
+
+"settings.copyName.withExt" = "包含扩展名";
+"settings.copyName.withoutExt" = "不含扩展名";
+
+// MARK: - 设置：图片
+
+"settings.image.convertSection" = "转换图片格式";
+"settings.image.convertDesc" = "选择在「转换为」子菜单中显示的格式。";
+"settings.image.quality" = "有损压缩质量:";
+"settings.image.qualityHint" = "仅对 JPEG、HEIC、WebP 等有损格式生效。";
+"settings.image.resizeSection" = "调整图片大小";
+"settings.image.resizeDesc" = "在「调整大小」子菜单中显示的预设选项。";
+"settings.image.resizeWidth" = "宽度 %d 像素";
+"settings.image.resizePercent" = "缩放至 %d%%";
+"settings.image.resizeDimensions" = "%d × %d 像素";
+"settings.image.resetResize" = "恢复默认";
+
+// MARK: - 设置：终端
+
+"settings.terminal.appSection" = "终端应用";
+"settings.terminal.appDesc" = "选择从 Finder 打开终端时使用的终端应用。";
+"settings.terminal.appPicker" = "终端:";
+"settings.terminal.custom" = "自定义";
+"settings.terminal.installed" = "%@ 已安装";
+"settings.terminal.notInstalled" = "%@ 未安装";
+"settings.terminal.pathSection" = "自定义路径";
+"settings.terminal.customPathRequired" = "请指定终端应用的路径（.app 包或可执行文件）。";
+"settings.terminal.customPathOptional" = "可选：覆盖自动检测的路径。留空将自动检测。";
+"settings.terminal.ghosttyDesc" = "配置 Ghostty 终端的可执行文件路径。留空将自动检测。";
+"settings.terminal.path" = "路径:";
+"settings.terminal.placeholder" = "自动检测";
+"settings.terminal.browse" = "浏览…";
+"settings.terminal.detect" = "自动检测";
+"settings.terminal.notFound" = "❌ 未找到 %@";
+"settings.terminal.searchPaths" = "自动检测时搜索的路径:";
+"settings.terminal.envVar" = "环境变量";
+"settings.terminal.browseTitle" = "选择终端应用或可执行文件";
+"settings.terminal.behaviorSection" = "行为说明";
+"settings.terminal.behaviorDesc" = "在 Finder 中右键点击将显示两个选项：「新建窗口」会打开一个新的终端窗口，「新建标签页」会在现有终端窗口中打开新标签页。两者都会导航到所选目录。";
+"settings.terminal.alacrittyNote" = "注意：Alacritty 不原生支持标签页。「新建标签页」将改为打开新窗口。";
+
+// MARK: - 关于
+
+"about.version" = "版本 1.1.0";
+"about.extensionStatus" = "Finder 扩展状态";
+"about.openExtensionSettings" = "打开扩展设置";
+"about.checking" = "正在检查…";
+"about.extensionEnabled" = "✅ 扩展已启用";
+"about.extensionDisabled" = "❌ 扩展未启用 — 请在系统设置中启用";
+"about.extensionUnknown" = "⚠️ 无法检测扩展状态";
+
+// MARK: - 设置窗口
+
+"settings.window.title" = "iMouse 设置";
