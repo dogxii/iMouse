@@ -12,6 +12,15 @@
 
 ---
 
+## 预览
+
+<div style="display: flex">
+  <img src="./preview-1.webp" alt="preview-1">
+  <img src="./preview-2.webp" alt="preview-2">
+</div>
+
+---
+
 ## 目录
 
 - [功能概览](#功能概览)

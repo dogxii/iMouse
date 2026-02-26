@@ -17,6 +17,7 @@
 
 import AppKit
 import SwiftUI
+import ImageIO
 
 // MARK: - App Entry Point
 
@@ -98,6 +99,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             handleAirDropURL(url)
         case "terminal":
             handleTerminalURL(url)
+        case "convert-webp":
+            handleConvertWebPURL(url)
         case "settings":
             DispatchQueue.main.async { [weak self] in
                 self?.openSettingsWindow()
@@ -267,6 +270,213 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         NSLog("[iMouse Terminal URL] 在主 App 中启动终端, dir: %@, asTab: %d", dirParam, asTab ? 1 : 0)
         TerminalLauncher.launch(workingDirectory: dirURL, asTab: asTab)
+    }
+
+    // MARK: - WebP 转换 URL 处理
+
+    /// 从 URL 中提取图片路径和质量参数，调用 cwebp 执行 WebP 转换。
+    /// URL 格式: imouse://convert-webp?files=<newline-separated paths>&quality=<0-100>
+    ///
+    /// FinderSync 扩展在沙盒中无法访问 /opt/homebrew/bin/cwebp，
+    /// 通过此 URL scheme 委托给非沙盒的主 App 执行。
+    private func handleConvertWebPURL(_ url: URL) {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let filesParam = components.queryItems?.first(where: { $0.name == "files" })?.value else {
+            NSLog("[iMouse WebP URL] 缺少 files 参数")
+            return
+        }
+
+        let qualityInt = Int(components.queryItems?.first(where: { $0.name == "quality" })?.value ?? "85") ?? 85
+        let quality = Double(qualityInt) / 100.0
+
+        let paths = filesParam.components(separatedBy: "\n").filter { !$0.isEmpty }
+        guard !paths.isEmpty else {
+            NSLog("[iMouse WebP URL] 没有可转换的文件")
+            return
+        }
+
+        NSLog("[iMouse WebP URL] 收到 WebP 转换请求：%d 个文件，quality: %d", paths.count, qualityInt)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            // 查找 cwebp
+            guard let cwebpPath = self.findCwebp() else {
+                NSLog("[iMouse WebP URL] 未找到 cwebp，提示用户安装")
+                DispatchQueue.main.async {
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("action.convert.error.title", comment: "转换失败")
+                    alert.informativeText = NSLocalizedString(
+                        "action.convert.error.webpNotSupported",
+                        comment: "macOS does not natively support writing WebP format.\n\nTo enable WebP conversion, please install the WebP tools via Homebrew:\n\n  brew install webp\n\nThen try again."
+                    )
+                    alert.alertStyle = .warning
+                    alert.addButton(withTitle: NSLocalizedString("common.ok", comment: "OK"))
+                    alert.runModal()
+                }
+                return
+            }
+
+            NSLog("[iMouse WebP URL] 使用 cwebp: %@", cwebpPath)
+
+            var failedFiles: [String] = []
+
+            for sourcePath in paths {
+                let sourceURL = URL(fileURLWithPath: sourcePath)
+                let baseName = sourceURL.deletingPathExtension().lastPathComponent
+                let sourceExt = sourceURL.pathExtension.lowercased()
+
+                // 确定输出路径（避免同名冲突）
+                let destURL = self.uniqueWebPOutputURL(sourceURL: sourceURL, baseName: baseName)
+
+                // cwebp 支持的输入格式: PNG, JPEG, TIFF, WebP
+                // 其他格式（HEIC, BMP, GIF 等）先转换为临时 PNG
+                let cwebpNativeInputs = ["png", "jpg", "jpeg", "tif", "tiff", "webp"]
+                var inputURL = sourceURL
+                var tempFileURL: URL? = nil
+
+                if !cwebpNativeInputs.contains(sourceExt) {
+                    let tempDir = FileManager.default.temporaryDirectory
+                    let tempPNG = tempDir.appendingPathComponent("imouse_webp_\(UUID().uuidString.prefix(8)).png")
+
+                    if let imageSource = CGImageSourceCreateWithURL(sourceURL as CFURL, nil),
+                       let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil),
+                       let dest = CGImageDestinationCreateWithURL(tempPNG as CFURL, "public.png" as CFString, 1, nil) {
+                        CGImageDestinationAddImage(dest, cgImage, nil)
+                        if CGImageDestinationFinalize(dest) {
+                            inputURL = tempPNG
+                            tempFileURL = tempPNG
+                        }
+                    }
+
+                    if inputURL == sourceURL {
+                        // 临时 PNG 创建失败
+                        NSLog("[iMouse WebP URL] 无法创建临时 PNG: %@", sourcePath)
+                        failedFiles.append(sourceURL.lastPathComponent)
+                        continue
+                    }
+                }
+
+                // 调用 cwebp
+                let success = self.runCwebp(
+                    cwebpPath: cwebpPath,
+                    inputPath: inputURL.path(percentEncoded: false),
+                    outputPath: destURL.path(percentEncoded: false),
+                    quality: qualityInt
+                )
+
+                // 清理临时文件
+                if let tmp = tempFileURL {
+                    try? FileManager.default.removeItem(at: tmp)
+                }
+
+                if success {
+                    NSLog("[iMouse WebP URL] ✅ 转换成功: %@", destURL.lastPathComponent)
+                } else {
+                    NSLog("[iMouse WebP URL] ❌ 转换失败: %@", sourceURL.lastPathComponent)
+                    failedFiles.append(sourceURL.lastPathComponent)
+                    // 清理可能产生的损坏输出文件
+                    if FileManager.default.fileExists(atPath: destURL.path(percentEncoded: false)) {
+                        try? FileManager.default.removeItem(at: destURL)
+                    }
+                }
+            }
+
+            // 有失败时在主线程弹窗
+            if !failedFiles.isEmpty {
+                DispatchQueue.main.async {
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("action.convert.error.title", comment: "转换失败")
+                    alert.informativeText = String(
+                        format: NSLocalizedString("action.convert.error.someFailed", comment: "以下文件转换失败:\n%@"),
+                        failedFiles.joined(separator: "\n")
+                    )
+                    alert.alertStyle = .warning
+                    alert.addButton(withTitle: NSLocalizedString("common.ok", comment: "OK"))
+                    alert.runModal()
+                }
+            }
+        }
+    }
+
+    /// 在常见路径中查找 cwebp 可执行文件
+    private func findCwebp() -> String? {
+        let searchPaths = [
+            "/opt/homebrew/bin/cwebp",   // Apple Silicon Homebrew
+            "/usr/local/bin/cwebp",      // Intel Homebrew
+            "/opt/local/bin/cwebp",      // MacPorts
+            "/usr/bin/cwebp",
+        ]
+        let fm = FileManager.default
+        for path in searchPaths {
+            if fm.isExecutableFile(atPath: path) {
+                return path
+            }
+        }
+        // 通过 zsh 查找（处理用户自定义 PATH）
+        let process = Process()
+        let pipe = Pipe()
+        process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        process.arguments = ["-l", "-c", "which cwebp"]
+        process.standardOutput = pipe
+        process.standardError = FileHandle.nullDevice
+        do {
+            try process.run()
+            process.waitUntilExit()
+            if process.terminationStatus == 0 {
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8)?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                if let output, !output.isEmpty, fm.isExecutableFile(atPath: output) {
+                    return output
+                }
+            }
+        } catch {
+            NSLog("[iMouse WebP URL] which cwebp failed: %@", error.localizedDescription)
+        }
+        return nil
+    }
+
+    /// 调用 cwebp 将图片转换为 WebP
+    private func runCwebp(cwebpPath: String, inputPath: String, outputPath: String, quality: Int) -> Bool {
+        let process = Process()
+        let errPipe = Pipe()
+        process.executableURL = URL(fileURLWithPath: cwebpPath)
+        process.arguments = ["-q", "\(quality)", inputPath, "-o", outputPath]
+        process.standardOutput = FileHandle.nullDevice
+        process.standardError = errPipe
+        do {
+            try process.run()
+            process.waitUntilExit()
+            if process.terminationStatus != 0 {
+                let errData = errPipe.fileHandleForReading.readDataToEndOfFile()
+                let errStr = String(data: errData, encoding: .utf8) ?? ""
+                NSLog("[iMouse WebP URL] cwebp 失败 (exit %d): %@", process.terminationStatus, errStr)
+                return false
+            }
+            return true
+        } catch {
+            NSLog("[iMouse WebP URL] cwebp 启动失败: %@", error.localizedDescription)
+            return false
+        }
+    }
+
+    /// 生成不冲突的 WebP 输出路径
+    private func uniqueWebPOutputURL(sourceURL: URL, baseName: String) -> URL {
+        let parentDir = sourceURL.deletingLastPathComponent()
+        let fm = FileManager.default
+
+        let first = parentDir.appendingPathComponent("\(baseName).webp")
+        if !fm.fileExists(atPath: first.path(percentEncoded: false)) { return first }
+
+        let converted = parentDir.appendingPathComponent("\(baseName)_converted.webp")
+        if !fm.fileExists(atPath: converted.path(percentEncoded: false)) { return converted }
+
+        var counter = 2
+        while counter <= 10000 {
+            let candidate = parentDir.appendingPathComponent("\(baseName)_converted \(counter).webp")
+            if !fm.fileExists(atPath: candidate.path(percentEncoded: false)) { return candidate }
+            counter += 1
+        }
+        return parentDir.appendingPathComponent("\(baseName)_\(Int(Date().timeIntervalSince1970)).webp")
     }
 
     // MARK: - AirDrop URL 处理
